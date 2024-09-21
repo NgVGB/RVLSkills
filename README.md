@@ -1,12 +1,12 @@
 # RVLSkills [1.12.x - 1.20.x]
 
-> VN
+> VN <br>
 > Plugin về kĩ năng RPG đa dạng sử dụng cho server Minecraft giúp tạo thêm content
 > giữ chân người chơi ở lại để họ cày cuốc thêm <br>
 
 > Đây là phiên bản được chỉnh sửa và thay đổi từ plugin gốc là SkillsPro từ Author: Hex26 & Crypto_Morin <br>
 
-> EN
+> EN <br>
 > SkillsPro is a Minecraft plugin for RPG servers that provides many unique classes/skills for players.
 > Each skill has its own unique passive and active abilities <br>
 
