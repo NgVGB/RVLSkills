@@ -1,0 +1,141 @@
+package me.blubriu.sGSkills.org.skills.types;
+
+import org.apache.commons.lang.Validate;
+import me.blubriu.sGSkills.org.skills.abilities.Ability;
+import me.blubriu.sGSkills.org.skills.abilities.AbilityManager;
+import me.blubriu.sGSkills.org.skills.data.managers.PlayerSkill;
+import me.blubriu.sGSkills.org.skills.data.managers.SkilledPlayer;
+import me.blubriu.sGSkills.org.skills.main.SLogger;
+import me.blubriu.sGSkills.org.skills.main.locale.MessageHandler;
+import me.blubriu.sGSkills.org.skills.services.manager.ServiceHandler;
+import me.blubriu.sGSkills.org.skills.utils.MathUtils;
+import me.blubriu.sGSkills.org.skills.utils.StringUtils;
+import me.blubriu.sGSkills.org.skills.utils.YamlAdapter;
+
+import java.util.*;
+import java.util.function.Supplier;
+
+public class Skill {
+    private final Map<SkillScaling, String> scaling = new EnumMap<>(SkillScaling.class);
+    private final String name;
+    private Map<String, Ability> abilities = new HashMap<>();
+    private String displayName;
+    private Energy energy;
+    private List<Stat> stats;
+    private YamlAdapter adapter;
+
+    public Skill(String name) {
+        this.name = name;
+    }
+
+    public void register() {
+        Validate.notEmpty(name, "Skill name cannot be null or empty");
+        SkillManager.register(this);
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Skill)) return false;
+        Skill skill = (Skill) obj;
+        return this.name.equals(skill.name);
+    }
+
+    public boolean isNone() {
+        return this.name.equals(PlayerSkill.NONE);
+    }
+
+    public boolean hasAbility(Ability ability) {
+        return hasAbility(ability.getName());
+    }
+
+    public boolean hasAbility(String name) {
+        return abilities.containsKey(name);
+    }
+
+    public void unregister() {
+        SkillManager.unregister(this.name);
+    }
+
+    public double getScaling(SkilledPlayer info, SkillScaling type) {
+        String scaling = this.scaling.get(type);
+        if (scaling == null) {
+            if (info.hasSkill()) throw new NullPointerException("Accessing null scaling: " + type);
+            return 0;
+        }
+
+        String equation = StringUtils.replace(StringUtils.replace(
+                        ServiceHandler.translatePlaceholders(info.getOfflinePlayer(), scaling.toLowerCase(Locale.ENGLISH)),
+                        "lvl", String.valueOf(info.getLevel())),
+                "bloodwell", String.valueOf(info.getAbilityLevel(AbilityManager.getAbility("blood_well"))));
+
+        for (Stat stats : Stat.STATS.values()) {
+            equation = MessageHandler.replace(equation, '%' + stats.getNode() + '%',
+                    (Supplier<String>) (() -> String.valueOf(info.getStat(stats))));
+        }
+
+        return MathUtils.evaluateEquation(equation);
+    }
+
+    public void addScaling(SkillScaling type, String scale) {
+        scaling.put(type, scale);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public List<Stat> getStats() {
+        return stats;
+    }
+
+    public void setStats(List<String> stats) {
+        List<Stat> types = new ArrayList<>(stats.size());
+        for (String name : stats) {
+            Stat stat = Stat.getStat(name.toLowerCase(Locale.ENGLISH));
+            if (stat != null) types.add(stat);
+            else SLogger.error("Unknown stat type '" + name + "' in skill: " + name + " (" + displayName + ')');
+        }
+        this.stats = types;
+    }
+
+    public Collection<Ability> getAbilities() {
+        return abilities.values();
+    }
+
+    public void setAbilities(Map<String, Ability> abilities) {
+        this.abilities = abilities;
+    }
+
+    public Ability getAbility(String abiltiy) {
+        return abilities.get(abiltiy);
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public Energy getEnergy() {
+        return energy;
+    }
+
+    public void setEnergy(Energy energy) {
+        this.energy = energy;
+    }
+
+    public YamlAdapter getAdapter() {
+        return Objects.requireNonNull(adapter, () -> "Adapter of skill " + name + " is null");
+    }
+
+    public void setAdapter(YamlAdapter adapter) {
+        this.adapter = adapter;
+    }
+}
