@@ -1,0 +1,90 @@
+name: "Devourer"
+commands-to-perform-upon-select: [ ]
+commands-to-perform-upon-change: [ ]
+max-level: 100
+max-health: min(20 + (lvl / 2), 60)
+max-energy: lvl + 20
+energy-regen: 1 + 0.05 * lvl
+required-level: 30
+cost: 7000
+stats: [ STR, DEF ]
+energy: mana
+abilities:
+  devourer-passive:
+    # The damage of the effect every time it damages the player.
+    damage: (str * 2) / (def + 1)
+    # The chance from 100% for this ability to have effects.
+    chance: (30 + int / 2) + 30
+    # The potion duration in seconds.
+    duration: 5 + (30 + dex / 2)
+    # The potion amplifier (power) level.
+    amplifier: 1
+    # The potion effect type. Must be either WITHER or POISON
+    # Wither is better since it works on undead and spiders, but poison doesn't.
+    effect: WITHER
+  gliders:
+    required-level: 4
+    # The height of the player's double jump in vectors.
+    height: 1
+    # Speed
+    effects:
+      - "SPEED, 20 * 5, lvl"
+    cost: 100 * (lvl + 1)
+    double-jump-level: 3
+  consume:
+    required-level: 20
+    chance: lvl * 5
+    souls: (dex / 3) + lvl
+    # Damage if the victim has no souls.
+    damage: str/2
+    cost: 100 * (lvl + 1)
+  cloak:
+    required-level: 5
+    # Additional damage dealt when player is in cloak.
+    damage: dex/4
+    neutrality: true
+    cooldown:
+      invisibility: 30 - (lvl * 2)
+      neutrality: 30 - (lvl * 2)
+    cost: 100 * (lvl + 1)
+  disarm:
+    required-level: 10
+    cost: 100 * (lvl + 1)
+    activation:
+      idle: 5
+      key: LLR
+      energy: lvl * 2
+      cooldown: lvl * 4
+      items: [ ]
+  locate:
+    required-level: 10
+    cost: 100 * (lvl + 1)
+    range: 10 * lvl
+    activation:
+      idle: 5
+      key: SL
+      energy: lvl * 2
+      cooldown: lvl * 4
+      items: [ COMPASS ]
+  blink:
+    required-level: 10
+    hits: lvl * 3
+    cost: 100 * (lvl + 1)
+    activation:
+      idle: 5
+      key: LR
+      energy: lvl * 2
+      cooldown: lvl * 4
+      items: [ ]
+  hook:
+    required-level: 20
+    hook: SPECTRAL_ARROW
+    activation:
+      key: R
+      energy: 15
+      cooldown: 10
+      items: [ ]
+    untargetable-blocks: [ BEDROCK ]
+    # The distance between the hook and the player.
+    range: 50
+    cost: 100 * (lvl + 1)

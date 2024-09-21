@@ -1,0 +1,21 @@
+title: "&4&lXÁC NHẬN RESET"
+type: HOPPER
+sound: BLOCK_CHEST_OPEN
+
+options:
+  reset:
+    name: "&4&lXÁC NHẬN"
+    material: RED_WOOL
+    slot: 1
+    sound: ENCHANT_THORNS_HIT
+    lore:
+      - "&eOnce you reset your stats"
+      - "all the assigned statpoints to"
+      - "different stat types will be"
+      - "removed and added to your statpoints."
+  cancel:
+    name: "&2&lHỦY"
+    material: BARRIER
+    sound: BLOCK_NOTE_BLOCK_BASS
+    slot: 3
+

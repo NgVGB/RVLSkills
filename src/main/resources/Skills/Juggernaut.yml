@@ -1,0 +1,88 @@
+name: "Juggernaut"
+commands-to-perform-upon-select: [ ]
+commands-to-perform-upon-change: [ ]
+max-level: 100
+max-health: min(20 + (lvl / 2), 60)
+max-energy: lvl + 20
+energy-regen: 1 + 0.05 * lvl
+required-level: 10
+cost: 3000
+stats: [ STR, INT ]
+energy: mana
+abilities:
+  juggernaut-passive:
+    shield: def/2
+    chance: def
+  heavy-strikes:
+    required-level: 5
+    # Special Variables: durability
+    durability-damage: (def / 2) + lvl
+    cost: 100 * (lvl + 1)
+    weapons:
+      - "CONTAINS:AXE"
+  stone-skin:
+    required-level: 5
+    cost: 100 * (lvl + 1)
+    # CONTACT, ENTITY_ATTACK, ENTITY_SWEEP_ATTACK, PROJECTILE, SUFFOCATION, FALL, FIRE,FIRE_TICK, MELTING, LAVA, DROWNING,
+    # BLOCK_EXPLOSION, ENTITY_EXPLOSION, VOID, LIGHTNING, SUICIDE, STARVATION, POISON, MAGIC, WITHER, FALLING_BLOCK,
+    # THORNS, DRAGON_BREATH, CUSTOM, FLY_INTO_WALL, HOT_FLOOR,CRAMMING, DRYOUT
+    protections:
+      FALL: lvl * (def / 4)
+      # Results in 0 for lvl 1
+      FIRE: lvl * (def/4)
+      LAVA: lvl * (def/5)
+      # Results in 0 for lvl 1 and 2
+      THORNS: max(0, lvl - 2) def/3
+  chain-smash:
+    required-level: 20
+
+    # Should a TNT be used as an explosion?
+    # If true, no blocks will be destroyed.
+    disable-explosion: false
+
+    # The force causes the player to jump into the air to smash back.
+    initial-launch: min(2, lvl)
+
+    # The negative force that causes the player to smash back into the ground.
+    smash-force: min(-2, -lvl)
+
+    # The force that throws surrounding players away from the attacker.
+    explosion-launch: min(2.5, lvl)
+
+    # Damage surrounding players.
+    damage: (str / 2) + lvl
+
+    # The surrounding players range which the damage and explosion launch applies to.
+    range: lvl + 2
+
+    cost: 100 * (lvl + 1)
+    activation:
+      key: LR
+      energy: 18
+      cooldown: 15
+      items: [ ]
+  aegis-protection:
+    required-level: 10
+    reflect-damage-percent: lvl * 10
+    cooldown: lvl * 2
+    damage: str/2
+    knockback:
+      # Health percent.
+      health: 30
+      velocity: 2
+    cost: 100 * (lvl + 1)
+  throw:
+    required-level: 1
+    activation:
+      idle: 5
+      key: R
+      energy: 10
+      cooldown: 15
+      items: [ ]
+    damage: str/20+lvl*3
+    shield-percent: lvl * 15
+    carry-time: lvl * 2
+    # Entity types that this ability can be used on.
+    # https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html
+    whitelist: [ '*' ]
+    cost: 100 * (lvl + 1)
